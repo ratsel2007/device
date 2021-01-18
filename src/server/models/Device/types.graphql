@@ -1,0 +1,26 @@
+type Device {
+    id: ID!
+    owner: String!
+    type: String
+    title: String!
+    serial: Float
+    buh: Float
+    place: String
+}
+
+input DeviceInput {
+    owner: String!
+    type: String
+    title: String!
+    serial: Float
+    buh: Float
+    place: String
+}
+
+input UpdateDeviceInput {
+    type: String
+    title: String
+    serial: Float
+    buh: Float
+    place: String
+}

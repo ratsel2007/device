@@ -1,0 +1,9 @@
+query DeviceById($id:ID!) {
+    device(id:$id){
+        id
+        title
+        serial
+        buh
+        place
+    }
+}

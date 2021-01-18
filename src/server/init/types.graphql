@@ -1,0 +1,20 @@
+# import "../models/Device/types.graphql"
+# import "../models/User/types.graphql"
+
+type Query {
+    devices: [Device!]!
+    device(id: ID!): Device!
+    users: [User!]!
+}
+
+type Mutation {
+    addDevice(device: DeviceInput!): Device
+    updateDevice(id: ID!, device: UpdateDeviceInput): Device
+    deleteDevice(id: ID!): Device
+    register(registerInput: RegisterInput): User!
+    logIn(username: String!, password: String!): User!
+}
+
+
+
+

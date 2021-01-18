@@ -1,0 +1,9 @@
+query Devices {
+    devices {
+        id
+        title
+        serial
+        buh
+        place
+    }
+}
