@@ -1,10 +1,10 @@
 // Core
-import React from 'react'
+import React, { useContext } from 'react'
+import {Link} from "react-router-dom";
 
 // Components
-import { Header } from '../Header'
 import { SimpleCard } from './SimpleCard'
-import { Modal } from '../Modal'
+import { Loader } from "../../utils/Loader"
 
 // MaterialUI
 import { makeStyles } from '@material-ui/core/styles'
@@ -13,11 +13,8 @@ import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add'
 
 // Hooks
-import { useQueryDevices } from './hooks/useQueryDevices'
-
-import store from '../../store/mainStore'
-import { observer } from 'mobx-react-lite'
-import { toJS } from 'mobx'
+import { useQueryDevicesByUser } from './hooks/useQueryDevicesByUser'
+import { AuthContext } from '../../utils/context/AuthContext'
 
 const useStyles = makeStyles({
     root: {
@@ -32,12 +29,15 @@ const useStyles = makeStyles({
     }
 })
 
-const Main = observer(() => {
+const Main = () => {
     const classes = useStyles()
 
-    const { loading, error, devices } = useQueryDevices()
+    const { user } = useContext(AuthContext)
+
+    const { loading, error, devices } = useQueryDevicesByUser(user.name)
+
     if(loading) {
-        return <p>Loading...</p>
+        return <Loader />
     }
 
     if(error) {
@@ -53,12 +53,13 @@ const Main = observer(() => {
             <Container className={classes.root}>
                 { devicesJSX }
             </Container>
-            <Fab className={classes.addButton} color="primary" aria-label="add" onClick={store.handleAddMode}>
-                <AddIcon />
-            </Fab>
-            { store.state.modalMode && <Modal /> }
+            <Link to='/addNewDevice' >
+                <Fab className={classes.addButton} color="primary" aria-label="add">
+                    <AddIcon />
+                </Fab>
+            </Link>
         </>
     );
-})
+}
 
 export default Main;

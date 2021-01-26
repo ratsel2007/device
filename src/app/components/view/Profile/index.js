@@ -1,33 +1,28 @@
 // Core
-import React from 'react';
+import React, {useState} from 'react'
 
-// MaterialUI
-import { ButtonGroup } from '../../ButtonGroup';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+// Components
+import { ViewMode } from "./ViewMode"
+import { EditMode } from "./EditMode"
+import {Loader} from "../../../utils/Loader";
 
 // Hooks
-import { useQueryDeviceById } from '../hooks/useQueryDeviceById';
+import { useQueryDeviceById } from '../hooks/useQueryDeviceById'
 
-const useStyles = makeStyles({
-    root: {
-        padding: 15
-    },
-    flex: {
-        display: 'flex',
-        flexDirection: 'column'
-    }
-})
 
 export const Profile = (props) => {
-    const classes = useStyles()
+    const [edit, setEdit] = useState(false)
 
     const id = props.match.params.id
 
     const { loading, error, device } = useQueryDeviceById(id)
 
+    const handleEdit = () => {
+        setEdit(prev => !prev)
+    }
+
     if(loading) {
-        return <p>Loading...</p>
+        return <Loader />
     }
 
     if(error) {
@@ -36,15 +31,8 @@ export const Profile = (props) => {
 
     return (
         <>
-            { device &&
-            <div className={`${classes.root} ${classes.flex}`}>
-                <Typography>{device.title}</Typography>
-                <Typography>{device.serial}</Typography>
-                <Typography>{device.buh}</Typography>
-                <Typography>{device.place}</Typography>
-            </div>
-            }
+            { (device && edit) && <EditMode device={device} handleEdit={() => handleEdit()} /> }
+            { (device && !edit) && <ViewMode device={device} handleEdit={() => handleEdit()} /> }
         </>
-
     )
 }

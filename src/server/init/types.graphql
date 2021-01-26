@@ -4,6 +4,7 @@
 type Query {
     devices: [Device!]!
     device(id: ID!): Device!
+    deviceByUser(owner: String!): [Device!]!
     users: [User!]!
 }
 
@@ -13,6 +14,10 @@ type Mutation {
     deleteDevice(id: ID!): Device
     register(registerInput: RegisterInput): User!
     logIn(username: String!, password: String!): User!
+}
+
+type Subscription {
+    device: Device!
 }
 
 

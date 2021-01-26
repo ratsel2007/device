@@ -56,7 +56,8 @@ export const _logIn = async (username, password) => {
             throw new Error('User is not found')
         }
 
-        const match = bcrypt.compare(password, user.password)
+        const match = await bcrypt.compare(password, user.password)
+
         if(!match) {
             throw new Error('Wrong credentials')
         }

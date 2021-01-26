@@ -1,5 +1,8 @@
 import { model, Schema } from 'mongoose'
 
+import { pubSub } from '../../init/server'
+import { events } from './events';
+
 const deviceSchema = new Schema({
     owner: String,
     type: String,
@@ -19,6 +22,14 @@ export const getDevices = async () => {
     }
 }
 
+export const getDevicesByUser = async (owner) => {
+    try {
+        return await Model.find({ owner })
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 export const getDeviceById = async (id) => {
     try {
         return await Model.findById(id)
@@ -29,8 +40,13 @@ export const getDeviceById = async (id) => {
 
 export const _addDevice = async (device) => {
     try {
-        console.log(device)
-        return await Model.create(device)
+        const newDevice = new Model({
+            ...device
+        })
+        await pubSub.publish(events.DEVICE_ADDED, {
+            device
+        })
+        return await newDevice.save()
     } catch (e) {
         console.log(e)
     }
@@ -38,6 +54,9 @@ export const _addDevice = async (device) => {
 
 export const _updateDevice = async (id, device) => {
     try {
+        await pubSub.publish(events.DEVICE_UPDATE, {
+            device
+        })
         return await Model.findByIdAndUpdate(id, device)
     } catch (e) {
         console.log(e)
@@ -46,7 +65,11 @@ export const _updateDevice = async (id, device) => {
 
 export const _deleteDevice = async (id) => {
     try {
-        return await Model.findByIdAndDelete(id)
+        const device = await Model.findByIdAndDelete(id)
+        await pubSub.publish(events.DEVICE_DELETE, {
+            device
+        })
+        return device
     } catch (e) {
         console.log(e)
     }

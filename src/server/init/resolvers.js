@@ -1,46 +1,21 @@
-import {
-    getDevices,
-    getDeviceById,
-    _addDevice,
-    _deleteDevice,
-    _updateDevice
-} from '../models/Device/Model'
-import {
-    getUsers,
-    _register,
-    _logIn
-} from '../models/User/Model'
+import { queries as userQueries } from '../models/User/queries'
+import { queries as deviceQueries } from '../models/Device/queries'
+
+import { mutations as userMutations } from '../models/User/mutations'
+import { mutations as deviceMutations } from '../models/Device/mutations'
+
+import { subscriptions as deviceSubscriptions } from '../models/Device/subscriptions';
 
 export const resolvers = {
-    // Query: {
-    //     ...deviceResolvers.Query,
-    //     ...userResolvers.Query
-    // },
-    // Mutation: {
-    //     ...deviceResolvers.Mutation,
-    //     ...userResolvers.Mutation
-    // }
     Query: {
-        devices: () => getDevices(),
-        device: (_, { id }) => getDeviceById(id),
-        users: (_, __, context) => {
-            if(context.req.username) {
-                return getUsers()
-            } else {
-                return getUsers()
-                    .then(res => res.map(({ name, username }) => ({
-                        name,
-                        username,
-                        password: null
-                    })))
-            }
-        }
+        ...userQueries,
+        ...deviceQueries
     },
     Mutation: {
-        addDevice: (_, { device }) => _addDevice(device),
-        updateDevice: (_, { id, device }) => _updateDevice(id, device),
-        deleteDevice: (_, { id }) => _deleteDevice(id),
-        register:(_, {  registerInput } ) => _register(registerInput),
-        logIn: (_, { username, password }, context) => _logIn(username, password, context)
+        ...userMutations,
+        ...deviceMutations
+    },
+    Subscription: {
+        ...deviceSubscriptions
     }
 }
